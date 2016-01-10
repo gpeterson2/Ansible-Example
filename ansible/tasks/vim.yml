@@ -1,0 +1,4 @@
+---
+
+- name: set vimrc
+  copy: src=~/.vimrc dest=/home/vagrant/

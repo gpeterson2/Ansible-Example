@@ -1,0 +1,25 @@
+---
+# Lein
+
+- name: create local bin
+  file: path=/home/vagrant/.bin state=directory
+
+- name: download lein
+  get_url: >
+    url=https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+    dest=/home/vagrant/.bin
+
+- name: change lien permissions
+  file: path=/home/vagrant/.bin/lein mode=755
+
+- name: Update local path
+  lineinfile: >
+    dest=/home/vagrant/.bashrc
+    state=present
+    regexp="PATH=\$PATH"
+    line="PATH=$PATH:~/.bin"
+
+# TODO - Always maked as changed, could have it create a file or something
+# to indicate that it was run the first time.
+#- name: Run lein
+  #shell: /home/vagrant/.bin/lein

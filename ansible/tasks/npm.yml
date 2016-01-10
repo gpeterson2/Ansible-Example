@@ -1,0 +1,59 @@
+---
+
+# TODO - apparently these are global, so there's probably a better
+# way of doing this.
+- set_fact:
+    npm_package_path: '/home/vagrant/.npm-packages'
+    bashrc_path: '/home/vagrant/.bashrc'
+    npmrc_path: '/home/vagrant/.npmrc'
+
+- name: check if nodejs is alread installed
+  shell: 'dpkg --list | grep -qs nodejs'
+  register: nodejs_exists
+  ignore_errors: yes
+
+#- debug: msg="nodejs_exists - {{ nodejs_exists }}"
+
+- name: download nodejs setup
+  get_url: >
+    url=https://deb.nodesource.com/setup_4.x
+    dest=/home/vagrant/setup_4.x
+  when: nodejs_exists|failed
+
+- name: run nodejs setup
+  command: 'sudo -E bash /home/vagrant/setup_4.x'
+  when: nodejs_exists|failed
+
+- name: install nodejs
+  become: yes
+  become_method: sudo
+  apt: pkg=nodejs
+  when: nodejs_exists|failed
+
+# Set things up so you don't need sudo for npm install -g
+- name: create global path
+  file: path={{ npm_package_path }} state=directory
+  when: nodejs_exists|failed
+
+- name: create npmrc
+  file: path={{ npmrc_path }} state=touch
+  when: nodejs_exists|failed
+
+- name: update npmrc
+  lineinfile: >
+    dest={{ npmrc_path }}
+    state=present
+    regexp="prefix=.*npm-packages"
+    line="prefix={{ npm_package_path }}"
+  when: nodejs_exists|failed
+
+- name: update bashrc
+  lineinfile:
+    dest: "{{ bashrc_path }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { regexp: 'NPM_PACKAGES', line: 'NPM_PACKAGES="{{ npm_package_path }}"'}
+    - { regexp: 'PATH=.*npm-packages', line: 'PATH="$PATH:{{ npm_package_path }}"'}
+    - { regexp: 'export MANPATH.*', line: 'export MANPATH="{{ npm_package_path }}/share/man:$(manpath)"'}
+  when: nodejs_exists|failed

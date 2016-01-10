@@ -1,0 +1,25 @@
+---
+
+- name: set mongo key
+  become: yes
+  become_method: sudo
+  apt_key: >
+    keyserver=keyserver.ubuntu.com
+    id=7F0CEB10
+    state=present
+
+- name: Add mongo repo
+  become: yes
+  become_method: sudo
+  apt_repository: >
+    repo='deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen'
+    update_cache=yes
+    state=present
+
+- name: install mongo
+  become: yes
+  become_method: sudo
+  apt: >
+    pkg=mongodb-org
+    state=installed
+
