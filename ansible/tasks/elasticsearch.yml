@@ -1,5 +1,10 @@
 ---
 
+- name: install Java
+  package: name=openjdk-7-jre state=latest
+  become: yes
+  become_method: sudo
+
 - name: check if elasticsearch is already installed
   shell: 'dpkg --list | grep -qs elasticsearch'
   register: elasticsearch_exists

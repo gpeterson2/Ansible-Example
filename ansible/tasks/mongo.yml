@@ -1,5 +1,7 @@
 ---
 
+# Specifically assumes apt
+
 - name: set mongo key
   become: yes
   become_method: sudo

@@ -1,5 +1,11 @@
 ---
+
 # Lein
+
+- name: install Java
+  package: name=openjdk-7-jre state=latest
+  become: yes
+  become_method: sudo
 
 - name: create local bin
   file: path=/home/vagrant/.bin state=directory

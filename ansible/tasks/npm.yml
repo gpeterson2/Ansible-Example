@@ -21,7 +21,7 @@
   when: nodejs_exists|failed
 
 - name: run nodejs setup
-  command: 'sudo -E bash /home/vagrant/setup_6.x'
+  command: 'sudo -E bash /home/vagrant/setup_5.x'
   when: nodejs_exists|failed
 
 - name: install nodejs
