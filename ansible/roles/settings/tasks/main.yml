@@ -1,0 +1,54 @@
+---
+
+# Copies local settings files, if available
+
+# Gitconfig
+- name: Check for gitconfig
+  local_action: stat path=~/.gitconfig
+  register: gitconfig
+
+#- name: debug gitconfig
+#  debug: var=gitconfig
+
+- name: set gitconfig
+  copy: src=~/.gitconfig dest=/home/vagrant/
+  when: gitconfig.stat.exists == True
+  ignore_errors: yes
+
+
+# Vimrc
+- name: Check for vimrc
+  local_action: stat path=~/.vimrc
+  register: vimrc
+
+- name: set vimrc
+  copy: src=~/.vimrc dest=/home/vagrant/
+  when: vimrc.stat.exists == True
+
+# TODO - Check the vimrc file to figure out which one to run.
+# lineinfile lets you check if a line exists, but tries to add it.
+# There's probably something else that will just check.
+
+# Assumes git
+- name: Install Vundle
+  git: >
+    repo=https://github.com/VundleVim/Vundle.vim.git
+    dest=~/.vim/bundle/Vundle.vim
+    clone=yes
+  when: vimrc.stat.exists == True
+
+#- name: Install NeoBundle
+#  git: >
+#    rep=https://github.com/Shougo/neobundle.vim
+#    dest=~/.vim/bundle/neobundle.vim
+#    clone=yes
+#  when: vimrc.stat.exists == True
+
+# Tmux
+- name: Check for tmux.conf
+  local_action: stat path=~/.tmux.conf
+  register: tmuxconf
+
+- name: set tmux conf
+  copy: src=~/.tmux.conf dest=/home/vagrant/
+  when: tmuxconf.stat.exists == True

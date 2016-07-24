@@ -1,9 +1,0 @@
----
-
-- name: install tmux
-  package: name=tmux state=latest
-  become: yes
-  become_method: sudo
-
-- name: set tmux conf
-  copy: src=~/.tmux.conf dest=/home/vagrant/

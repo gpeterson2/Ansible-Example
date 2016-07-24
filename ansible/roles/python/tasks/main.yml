@@ -1,0 +1,6 @@
+---
+
+- name: install python
+  package: name=python state=latest
+  become: yes
+  become_method: sudo

@@ -7,6 +7,13 @@
   become: yes
   become_method: sudo
 
+- name: check if lein is already installed
+  stat: path=/home/vagrant/.bin/lein
+  register: lein
+
+- name: debug gitconfig
+  debug: var=lein
+
 - name: create local bin
   file: path=/home/vagrant/.bin state=directory
 
@@ -14,18 +21,20 @@
   get_url: >
     url=https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
     dest=/home/vagrant/.bin
+  when: lein.stat.exists == False
 
 - name: change lien permissions
   file: path=/home/vagrant/.bin/lein mode=755
+  when: lein.stat.exists == False
 
-- name: Update local path
+- name: update local path
   lineinfile: >
     dest=/home/vagrant/.bashrc
     state=present
     regexp="PATH=\$PATH"
     line="PATH=$PATH:~/.bin"
+  when: lein.stat.exists == False
 
-# TODO - Always maked as changed, could have it create a file or something
-# to indicate that it was run the first time.
-#- name: Run lein
-  #shell: /home/vagrant/.bin/lein
+- name: run lein initially to get dependencies
+  shell: /home/vagrant/.bin/lein
+  when: lein.stat.exists == False

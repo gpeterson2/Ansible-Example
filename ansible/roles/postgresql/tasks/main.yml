@@ -1,0 +1,47 @@
+---
+
+# Sets up a PostgreSQL database
+
+- name: install postgres CentOS/Red Hat
+  yum: name={{ item }}  state=present
+  with_items:
+    - postgresql-server
+    - postgresql-client
+    - postgresql-contrib
+  become: yes
+  become_method: sudo
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: install postgres Debian/Ubuntu
+  apt: name={{ item }}  state=present
+  with_items:
+    - postgresql
+    - postgresql-client
+    - postgresql-contrib
+  become: yes
+  become_method: sudo
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: add postgres user
+  user:
+    name=postgres
+    createhome=no
+  become: yes
+  become_method: sudo
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+# Will probably error if already installed
+- name: initiate database
+  command: postgresql-setup initdb
+  ignore_errors: yes
+  become: yes
+  become_method: sudo
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: re/start and enable postgresql
+  service:
+    name=postgresql
+    enabled=yes
+    state=restarted
+  become: yes
+  become_method: sudo

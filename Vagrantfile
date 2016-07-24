@@ -33,8 +33,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # If true, then any SSH connections made will enable agent forwarding.
   # Default value: false
-  # config.ssh.forward_agent = true
-  #
+  config.ssh.forward_agent = true
+
   #config.vm.synced_folder ".", "/vagrant", disabled: true
 
   # Share an additional folder to the guest VM. The first argument is
@@ -65,7 +65,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.limit = "all"
     ansible.verbose = "v"
-    ansible.playbook = "ansible/playbook.yml"
+    ansible.playbook = "ansible/website.yml"
   end
 
 end
