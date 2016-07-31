@@ -1,6 +1,11 @@
 ---
 
-- name: install python
-  package: name=python state=latest
+# virtualenvwrapper might not be necessary for prod, but it is useful for
+# development.
+- name: install python packages
   become: yes
   become_method: sudo
+  apt: pkg={{item}} state=installed update_cache=yes
+  with_items:
+    - python3
+    - virtualenvwrapper
