@@ -1,0 +1,9 @@
+---
+
+- name: install fsharp
+  become: yes
+  become_method: sudo
+  apt: pkg={{item}} state=installed
+  with_items:
+      - mono-complete
+      - fsharp

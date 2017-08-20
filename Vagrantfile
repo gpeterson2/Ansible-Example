@@ -57,11 +57,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # View the documentation for the provider you're using for more
   # information on available options.
 
-  # Enable provisioning with Puppet stand alone.  Puppet manifests
-  # are contained in a directory path relative to this Vagrantfile.
-  # You will need to create the manifests directory and a manifest in
-  # the file default.pp in the manifests_path directory.
-  #
+  # ansible still requires python 2 for xenial64
+  config.vm.provision "shell" do |s|
+    s.inline = "apt-get install -y python"
+  end
+
   config.vm.provision "ansible" do |ansible|
     ansible.limit = "all"
     ansible.verbose = "v"
